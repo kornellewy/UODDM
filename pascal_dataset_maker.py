@@ -12,7 +12,7 @@ from xml.dom import minidom
 
 
 class PascalDatasetWriter(object):
-    """
+    """ Class build dolder structure and fill it with input data in pascal voc format.
     """
     def __init__(self):
         super().__init__()
