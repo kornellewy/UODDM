@@ -1,5 +1,6 @@
 from labelbox_interface import LabelBoxInterface
 from pascal_dataset_maker import PascalDatasetWriter
+from utils import clean_tmp
 
 if __name__ == "__main__":
     TEST_FILE = 'test_files/test_dataset.json'
@@ -9,3 +10,5 @@ if __name__ == "__main__":
 
     kjn1 = PascalDatasetWriter()
     kjn1.make_dataset(data=test_data, base_path='', dataset_name='test')
+
+    clean_tmp(TMP_FOLDER)
