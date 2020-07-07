@@ -153,8 +153,11 @@ class PascalDatasetWriter(object):
         self.create_classes_names(dataset_classes)
         self.create_classes_map(dataset_classes)
         self.save_images_and_labels(objects_on_images)
+        return None
 
+    def abstract_make_dataset(self, data, base_path, dataset_name):
+        return self.make_dataset(data, base_path, dataset_name)
 
 if __name__ == "__main__":
     kjn = PascalDatasetWriter()
-    kjn.make_dataset(data='', base_path='', dataset_name='test')
+    kjn.abstract_make_dataset(data='', base_path='', dataset_name='test')
