@@ -6,8 +6,9 @@ in annotations_folder_name with id like image that they discrabe.
 """
 # Right now no split to valid and train in folder structure.
 import os
+import xml.etree.ElementTree as ET
 
-class PascalWriter(object):
+class PascalDatasetWriter(object):
     def __init__(self):
         super().__init__()
         self.images_folder_name = 'JPEGImages'
@@ -41,8 +42,9 @@ class PascalWriter(object):
 
     def make_dataset(self, data, base_path, dataset_name):
         self.create_folder_structure(base_path, dataset_name)
+
         
         
 if __name__ == "__main__":
-    kjn = PascalWriter()
+    kjn = PascalDatasetWriter()
     kjn.make_dataset(data='', base_path='', dataset_name='test')

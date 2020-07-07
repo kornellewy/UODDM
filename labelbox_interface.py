@@ -16,8 +16,9 @@ class LabelBoxInterface(object):
         self.tmp_folder = tmp_folder
         
     def get_data(self, json_file_path):
-        """ Retrun dict with list of images and list of objects, objects have img_path, 
-        widtha and height of image, list of dict with singel boxes, and list of labels.
+        """ Retrun dict with list of images and list of classes and list of objects,
+        objects have img_path, widtha and height of image, list of dict with singel boxes,
+        and list of labels.
         :param json_file_path: path to json file to open
         :type json_file_path: str
         :retruns: dict of json data
@@ -26,6 +27,7 @@ class LabelBoxInterface(object):
         output = {}
         objects = []
         images = []
+        uniq_dataset_classes = []
         json_data = self.read_json_file(json_file_path)
         for image_json_object in json_data:
             object_data = {}
@@ -40,6 +42,8 @@ class LabelBoxInterface(object):
                 ymax = ymin + object_on_img['bbox']['height']
                 boxes.append([xmin, ymin, xmax, ymax])
                 labels.append(object_on_img["value"])
+                if not object_on_img["value"] in uniq_dataset_classes:
+                    uniq_dataset_classes.append(object_on_img["value"])
             width, height = self.get_image_size(image_save_path)
             object_data.update({'img_path': image_save_path})
             object_data.update({'width': width})
@@ -49,6 +53,7 @@ class LabelBoxInterface(object):
             objects.append(object_data)
             images.append(image_save_path)
         output.update({'images': images})
+        output.update({'dataset_classes': uniq_dataset_classes})
         output.update({'objects': objects})
         return output
 
