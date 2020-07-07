@@ -44,10 +44,12 @@ class LabelBoxInterface(object):
                 labels.append(object_on_img["value"])
                 if not object_on_img["value"] in uniq_dataset_classes:
                     uniq_dataset_classes.append(object_on_img["value"])
-            width, height = self.get_image_size(image_save_path)
+            width, height, depth = self.get_image_size(image_save_path)
+            object_data.update({'img_name': os.path.split(image_save_path)[1]})
             object_data.update({'img_path': image_save_path})
             object_data.update({'width': width})
             object_data.update({'height': height})
+            object_data.update({'depth': depth})
             object_data.update({'boxes': boxes})
             object_data.update({'labels': labels})
             objects.append(object_data)
@@ -77,8 +79,8 @@ class LabelBoxInterface(object):
         :rtype: tuple
         """
         img = cv2.imread(img_path)
-        height, width, _ = img.shape
-        return width, height
+        height, width, depth = img.shape
+        return width, height, depth
 
     def format_dataset_classes(self, dataset_classes):
         """ Reformat class names to have class 'background' on first place.
