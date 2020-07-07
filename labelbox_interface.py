@@ -40,7 +40,7 @@ class LabelBoxInterface(object):
                 ymin = object_on_img['bbox']['top']
                 xmax = xmin + object_on_img['bbox']['width']
                 ymax = ymin + object_on_img['bbox']['height']
-                boxes.append([xmin, ymin, xmax, ymax])
+                boxes.append({'xmin':xmin, 'ymin':ymin, 'xmax':xmax, 'ymax':ymax})
                 labels.append(object_on_img["value"])
                 if not object_on_img["value"] in uniq_dataset_classes:
                     uniq_dataset_classes.append(object_on_img["value"])
@@ -53,6 +53,7 @@ class LabelBoxInterface(object):
             objects.append(object_data)
             images.append(image_save_path)
         output.update({'images': images})
+        uniq_dataset_classes = self.format_dataset_classes(uniq_dataset_classes)
         output.update({'dataset_classes': uniq_dataset_classes})
         output.update({'objects': objects})
         return output
@@ -78,6 +79,26 @@ class LabelBoxInterface(object):
         img = cv2.imread(img_path)
         height, width, _ = img.shape
         return width, height
+
+    def format_dataset_classes(self, dataset_classes):
+        """ Reformat class names to have class 'background' on first place.
+        :param dataset_classes: list of dataset classes
+        :type dataset_classes: list
+        :retruns: formated list of dataset classes 
+        :rtype: list
+        """
+        # check if list have class 'background'
+        if 'background' in dataset_classes:
+            # check if 'background' on 1 first place in list
+            if dataset_classes[0] == 'background':
+                return dataset_classes
+            else:
+                dataset_classes.remove('background')
+                dataset_classes = ['background'] + dataset_classes
+                return dataset_classes
+        else:
+            dataset_classes = ['background'] + dataset_classes
+            return dataset_classes
 
     def abstract_get_data(self, json_file_path):
         """ Abstract interface to call main method of that class.
