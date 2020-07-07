@@ -4,7 +4,6 @@ the universal objcet detection dataset maker internal modules.
 import os
 import json
 import urllib.request
-from PIL import Image
 import cv2
 
 class LabelBoxInterface(object):
