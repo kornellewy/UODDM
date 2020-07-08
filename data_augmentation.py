@@ -1,6 +1,8 @@
 import os
 import cv2
+import random
 
+from utils import load_images
 from pascal_dataset_maker import PascalDatasetWriter
 
 class PascalDataArgumenter(PascalDatasetWriter):
@@ -26,12 +28,21 @@ class PascalDataArgumenter(PascalDatasetWriter):
             cv2.imwrite(cut_object_path, cut_image)
         return None
 
-
     def cut_and_save_object(self, objects_on_images):
         for object_on_image in objects_on_images:
             self.cut_objects(image_data=object_on_image)
+
+    def make_new_images_with_objects(self, image_limit_count, background_images_folder):
+        background_images = load_images(background_images_folder)
+        for class_name, class_folder_path in enumerate(self.dataset_classes_path_map):
+            background_image = random.choice(background_images)
+            cut_image = random.choice(class_folder_path)
             
-    def argument_data(self, data, base_path, dataset_name):
+
+
+
+            
+    def argument_data(self, data, base_path, dataset_name, image_limit_count, background_images_folder):
         self.abstract_make_dataset(data, base_path, dataset_name)
         self.create_tmp_structure()
 
@@ -40,6 +51,8 @@ class PascalDataArgumenter(PascalDatasetWriter):
         objects_on_images = data['objects']
 
         self.cut_and_save_object(objects_on_images)
+
+        self.make_new_images_with_objects(image_limit_count, background_images_folder)
 
 
 
