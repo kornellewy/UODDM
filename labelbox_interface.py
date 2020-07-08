@@ -13,7 +13,13 @@ class LabelBoxInterface(object):
     """
     def __init__(self, tmp_folder='tmp'):
         super().__init__()
+        self.check_and_create_tmp_folder(tmp_folder='tmp')
         self.tmp_folder = tmp_folder
+
+    def check_and_create_tmp_folder(self, tmp_folder='tmp'):
+        if not os.path.exist(tmp_folder):
+            os.mkdir(tmp_folder)
+        return None
         
     def get_data(self, json_file_path):
         """ Retrun dict with list of images and list of classes and list of objects,
