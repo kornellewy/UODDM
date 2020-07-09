@@ -41,7 +41,7 @@ class PascalDataArgumenter(PascalDatasetWriter):
 
 
 
-            
+        
     def argument_data(self, data, base_path, dataset_name, image_limit_count, background_images_folder):
         self.abstract_make_dataset(data, base_path, dataset_name)
         self.create_tmp_structure()
@@ -54,11 +54,8 @@ class PascalDataArgumenter(PascalDatasetWriter):
 
         self.make_new_images_with_objects(image_limit_count, background_images_folder)
 
-
-
-        
-    def abstract_argument_data(self, data, base_path, dataset_name):
-        return self.argument_data(data, base_path, dataset_name)
+    def abstract_argument_data(self, data, base_path, dataset_name, image_limit_count, background_images_folder):
+        return self.argument_data(data, base_path, dataset_name, image_limit_count, background_images_folder)
 
 
 

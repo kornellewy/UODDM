@@ -17,7 +17,7 @@ class LabelBoxInterface(object):
         self.tmp_folder = tmp_folder
 
     def check_and_create_tmp_folder(self, tmp_folder='tmp'):
-        if not os.path.exist(tmp_folder):
+        if not os.path.exists(tmp_folder):
             os.mkdir(tmp_folder)
         return None
         
@@ -36,6 +36,8 @@ class LabelBoxInterface(object):
         uniq_dataset_classes = []
         json_data = self.read_json_file(json_file_path)
         for image_json_object in json_data:
+            if not bool(image_json_object["Label"]):
+                continue
             object_data = {}
             image_save_path = os.path.join(self.tmp_folder, image_json_object["ID"]+".jpg")
             urllib.request.urlretrieve(image_json_object["Labeled Data"], image_save_path)
