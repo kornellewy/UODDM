@@ -1,7 +1,23 @@
 #TODO: komentarze
 import os
 import shutil
+import cv2
 from math import pi
+import numpy as np
+
+def get_image_size(img):
+    """ Return width, height of image.
+    :param img_path: path to image on dirve or img numpy ndarray
+    :type img_path: str or numpy ndarray
+    :retruns: width, height of img
+    :rtype: tuple
+    """
+    if isinstance(img, str):
+        img = cv2.imread(img)
+    elif isinstance(img, np.ndarray):
+        pass
+    height, width, depth = img.shape
+    return width, height, depth
 
 def get_rad(theta, phi, gamma):
     """
@@ -29,7 +45,11 @@ def deg_to_rad(deg):
     """
     return deg * pi / 180.0
 
-
+def get_image_name(path):
+    #TODO: komentarze
+    _, name = os.path.split(path)
+    name, _ = os.path.splitext(name)
+    return name
 
 def load_images_names(path):
     #TODO: komentarze
@@ -75,6 +95,10 @@ def clean_tmp(path):
     """
     shutil.rmtree(path)
     os.mkdir(path)
+    return None
+
+def remove_folder(path):
+    shutil.rmtree(path)
     return None
 
 def load_images(path):

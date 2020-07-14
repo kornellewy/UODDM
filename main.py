@@ -1,6 +1,6 @@
 from labelbox_interface import LabelBoxInterface
 from pascal_dataset_maker import PascalDatasetWriter
-from data_augmentation import PascalDataArgumenter
+from data_augmentation import PascalDataAugmenter
 from utils import clean_tmp
 
 if __name__ == "__main__":
@@ -20,6 +20,6 @@ if __name__ == "__main__":
     clean_tmp(TMP_FOLDER)
     kjn = LabelBoxInterface()
     test_data = kjn.get_data(TEST_FILE)
-    kjn1 = PascalDataArgumenter()
-    kjn1.abstract_argument_data(data=test_data, base_path='', dataset_name='test', image_limit_count=100, background_images_folder=BACKGROUND_IMAGES)
+    kjn1 = PascalDataAugmenter()
+    kjn1.argument_data(data=test_data, base_path='', dataset_name='test', image_limit_count=100, background_images_folder=BACKGROUND_IMAGES)
     clean_tmp(TMP_FOLDER)

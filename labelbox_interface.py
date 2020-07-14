@@ -5,6 +5,9 @@ import os
 import json
 import urllib.request
 import cv2
+from scipy import ndimage
+
+from utils import get_image_size
 
 class LabelBoxInterface(object):
     """ Class that read json file form labelbox portal.
@@ -13,15 +16,31 @@ class LabelBoxInterface(object):
     """
     def __init__(self, tmp_folder='tmp'):
         super().__init__()
-        self.check_and_create_tmp_folder(tmp_folder='tmp')
+        self._check_and_create_tmp_folder(tmp_folder='tmp')
         self.tmp_folder = tmp_folder
 
-    def check_and_create_tmp_folder(self, tmp_folder='tmp'):
+    def _check_and_create_tmp_folder(self, tmp_folder='tmp'):
         if not os.path.exists(tmp_folder):
             os.mkdir(tmp_folder)
         return None
         
-    def get_data(self, json_file_path):
+    def _check_images_orientation(self, image_path):
+        """
+        Check if dowloaded images have good orientation, and if bad
+        orientation that will be rotated.
+        :param image_path: path image
+        :type image_path: str
+        :retruns: None
+        :rtype: None
+        """
+        width, height, depth = get_image_size(image_path)
+        if height>width:
+            image = cv2.imread(image_path)
+            image = ndimage.rotate(image , 270)
+            cv2.imwrite(image_path, image)
+        return None
+
+    def _get_data(self, json_file_path):
         """ Retrun dict with list of images and list of classes and list of objects,
         objects have img_path, widtha and height of image, list of dict with singel boxes,
         and list of labels.
@@ -34,13 +53,14 @@ class LabelBoxInterface(object):
         objects = []
         images = []
         uniq_dataset_classes = []
-        json_data = self.read_json_file(json_file_path)
+        json_data = self._read_json_file(json_file_path)
         for image_json_object in json_data:
             if not bool(image_json_object["Label"]):
                 continue
             object_data = {}
             image_save_path = os.path.join(self.tmp_folder, image_json_object["ID"]+".jpg")
             urllib.request.urlretrieve(image_json_object["Labeled Data"], image_save_path)
+            self._check_images_orientation(image_save_path)
             boxes = list()
             labels = list()
             for object_on_img in image_json_object["Label"]["objects"]:
@@ -52,7 +72,7 @@ class LabelBoxInterface(object):
                 labels.append(object_on_img["value"])
                 if not object_on_img["value"] in uniq_dataset_classes:
                     uniq_dataset_classes.append(object_on_img["value"])
-            width, height, depth = self.get_image_size(image_save_path)
+            width, height, depth = get_image_size(image_save_path)
             object_data.update({'img_name': os.path.split(image_save_path)[1]})
             object_data.update({'img_path': image_save_path})
             object_data.update({'width': width})
@@ -63,12 +83,12 @@ class LabelBoxInterface(object):
             objects.append(object_data)
             images.append(image_save_path)
         output.update({'images': images})
-        uniq_dataset_classes = self.format_dataset_classes(uniq_dataset_classes)
+        uniq_dataset_classes = self._format_dataset_classes(uniq_dataset_classes)
         output.update({'dataset_classes': uniq_dataset_classes})
         output.update({'objects': objects})
         return output
 
-    def read_json_file(self, json_file_path):
+    def _read_json_file(self, json_file_path):
         """ Read json file form drive and return insides.
         :param json_file_path: path to json file to open
         :type json_file_path: str
@@ -79,18 +99,7 @@ class LabelBoxInterface(object):
             json_data = json.load(json_file)
         return json_data
 
-    def get_image_size(self, img_path):
-        """ Return width, height of image.
-        :param img_path: path to image on dirve
-        :type img_path: str
-        :retruns: width, height of img
-        :rtype: tuple
-        """
-        img = cv2.imread(img_path)
-        height, width, depth = img.shape
-        return width, height, depth
-
-    def format_dataset_classes(self, dataset_classes):
+    def _format_dataset_classes(self, dataset_classes):
         """ Reformat class names to have class 'background' on first place.
         :param dataset_classes: list of dataset classes
         :type dataset_classes: list
@@ -110,7 +119,7 @@ class LabelBoxInterface(object):
             dataset_classes = ['background'] + dataset_classes
             return dataset_classes
 
-    def abstract_get_data(self, json_file_path):
+    def get_data(self, json_file_path):
         """ Abstract interface to call main method of that class.
         That main metod of class, u need only to call thet method.
         :param json_file_path: path to json file to open
@@ -118,12 +127,12 @@ class LabelBoxInterface(object):
         :retruns: dict of json data
         :rtype: dict
         """
-        return self.get_data(json_file_path)
+        return self._get_data(json_file_path)
     
 if __name__ == "__main__":
     TEST_FILE = 'test_files/test_dataset.json'
     TMP_FOLDER = 'tmp'
     kjn = LabelBoxInterface()
-    print(kjn.get_data(TEST_FILE))
+    print(kjn._get_data(TEST_FILE))
 
 

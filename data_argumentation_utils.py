@@ -1,6 +1,8 @@
 #TODO: komentarze
 """
-This module that
+Module deals with image agumantion, DataRandomModifier is main class that u can use. 
+ImagePerspectiveTransformer is used in DataRandomModifier and im to stupit to explint it but,
+it rotate image along axes in sphere.
 """
 import cv2
 import numpy as np
@@ -239,37 +241,3 @@ class DataRandomModifier:
             else:
                 img = roi
         return img
-
-    def choise_random_modify(self, img, resize=True, random_crop=True, \
-        random_vertical_filp = True, random_horizontall_filp = True,random_channel_swap = True, \
-        random_blur=True, random_gaussian_noise=True,random_rotation=True, \
-        random_img_to_gray=True):
-        if random_crop:
-            img = self.random_crop(img)
-        if random_vertical_filp:
-            img = self.random_vertical_filp(img)
-        if random_horizontall_filp:
-            img = self.random_horizontall_filp(img)
-        if random_channel_swap:
-            img = self.random_channel_swap(img)
-        if random_blur:
-            img = self.random_blur(img)
-        if random_gaussian_noise:
-            img = self.random_gaussian_noise(img)
-        if random_rotation:
-            img = self.random_rotation(img)
-        if random_img_to_gray:
-            img = self.random_img_to_gray(img)
-        return img
-
-if (__name__ == '__main__'):
-    kjn = DataRandomModifier()
-    img = cv2.imread('img.jpg')
-    img, imgs = kjn.full_simple_all(img)
-    kjn.save_images_list(imgs, 'data_argument')
-
-    print(len(imgs))
-    # cv2.imwrite('data_argument/img.jpg', img)
-    # cv2.imwrite('data_argument/img1.jpg', img1)
-    # cv2.imwrite('data_argument/img2.jpg', img2)
-    # cv2.imwrite('data_argument/img3.jpg', img3)
