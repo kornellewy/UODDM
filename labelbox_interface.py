@@ -10,7 +10,8 @@ from scipy import ndimage
 from utils import get_image_size
 
 class LabelBoxInterface(object):
-    """ Class that read json file form labelbox portal.
+    """ 
+    Class that read json file form labelbox portal.
     :param tmp_folder: folder where temporarily store.
     :type tmp_folder: str
     """
@@ -36,12 +37,13 @@ class LabelBoxInterface(object):
         width, height, depth = get_image_size(image_path)
         if height>width:
             image = cv2.imread(image_path)
-            image = ndimage.rotate(image , 270)
+            image = ndimage.rotate(image , 90)
             cv2.imwrite(image_path, image)
         return None
 
     def _get_data(self, json_file_path):
-        """ Retrun dict with list of images and list of classes and list of objects,
+        """ 
+        Retrun dict with list of images and list of classes and list of objects,
         objects have img_path, widtha and height of image, list of dict with singel boxes,
         and list of labels.
         :param json_file_path: path to json file to open
@@ -89,7 +91,8 @@ class LabelBoxInterface(object):
         return output
 
     def _read_json_file(self, json_file_path):
-        """ Read json file form drive and return insides.
+        """ 
+        Read json file form drive and return insides.
         :param json_file_path: path to json file to open
         :type json_file_path: str
         :retruns: dict of json data
@@ -100,7 +103,8 @@ class LabelBoxInterface(object):
         return json_data
 
     def _format_dataset_classes(self, dataset_classes):
-        """ Reformat class names to have class 'background' on first place.
+        """ 
+        Reformat class names to have class 'background' on first place.
         :param dataset_classes: list of dataset classes
         :type dataset_classes: list
         :retruns: formated list of dataset classes 
@@ -120,7 +124,8 @@ class LabelBoxInterface(object):
             return dataset_classes
 
     def get_data(self, json_file_path):
-        """ Abstract interface to call main method of that class.
+        """ 
+        Abstract interface to call main method of that class.
         That main metod of class, u need only to call thet method.
         :param json_file_path: path to json file to open
         :type json_file_path: str

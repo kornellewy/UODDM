@@ -88,16 +88,13 @@ class PascalDataAugmenter(PascalDatasetWriter):
         :rtype: None
         """
         full_image = cv2.imread(image_data['img_path'])
-        width, height, depth = get_image_size(full_image)
-        if height>width:
-            full_image = ndimage.rotate(full_image , 90)
         for idx, i_object in enumerate(image_data['boxes']):
             cut_image = full_image[i_object['ymin']:i_object['ymax'], i_object['xmin']:i_object['xmax']]
             cut_object_name = "".join([os.path.splitext(image_data['img_name'])[0], '_',str(idx), ".jpg"])
             cut_object_path = os.path.join(self.dataset_classes_path_map[image_data['labels'][idx]], cut_object_name)
             width, height, depth = get_image_size(cut_image)
             if height>width:
-                cut_image = ndimage.rotate(cut_image , 270)
+                cut_image = ndimage.rotate(cut_image , -90)
             cv2.imwrite(cut_object_path, cut_image)
         return None
 
@@ -258,6 +255,7 @@ class PascalDataAugmenter(PascalDatasetWriter):
         Method that delate tmp folders after gen new data.
         """
         for class_name, class_folder in self.dataset_classes_map.items():
+            print(class_folder)
             remove_folder(class_folder)
         return None
             
