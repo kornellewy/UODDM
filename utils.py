@@ -4,9 +4,24 @@ import shutil
 import cv2
 from math import pi
 import numpy as np
+import pprint
+import glob
+
+def print_list_of_dict(list_of_dict):
+    """
+    Fuction print all dict in list one after another.
+    :param list_of_dict: list of dict to print
+    :type list_of_dict: str or numpy ndarray
+    :retruns: None
+    :rtype: None
+    """
+    for i_dict in list_of_dict:
+        pprint.pprint(i_dict)
+    return None
 
 def get_image_size(img):
-    """ Return width, height of image.
+    """
+    Return width, height of image.
     :param img_path: path to image on dirve or img numpy ndarray
     :type img_path: str or numpy ndarray
     :retruns: width, height of img
@@ -46,13 +61,26 @@ def deg_to_rad(deg):
     return deg * pi / 180.0
 
 def get_image_name(path):
-    #TODO: komentarze
+    """
+    Function return image name from path u give.
+    :param path: path to img
+    :type path: str
+    :retruns: None
+    :rtype: None
+    """
     _, name = os.path.split(path)
     name, _ = os.path.splitext(name)
     return name
 
 def load_images_names(path):
-    #TODO: komentarze
+    """
+    Function return list of images names in path folder u give.
+    Name so with no tail path and extencion.
+    :param path: path to folder with images
+    :type path: str
+    :retruns: list of founded images names.
+    :rtype: list
+    """
     images = []
     valid_images = [".jpg", ".png", "jpeg"]
     for f in os.listdir(path):
@@ -64,7 +92,14 @@ def load_images_names(path):
     return images
 
 def load_images_without_extention(path):
-    #TODO: komentarze
+    """
+    Function return list of images names in path folder u give.
+    Name so with no extecion.
+    :param path: path to folder with images
+    :type path: str
+    :retruns: list of founded images names.
+    :rtype: list
+    """
     images = []
     valid_images = [".jpg", ".png", "jpeg"]
     for f in os.listdir(path):
@@ -74,12 +109,34 @@ def load_images_without_extention(path):
         images.append(file)
     return images
 
-def find_all_dir(path):
-    #TODO: komentarze
+def find_all_dirs(path):
+    """
+    Function find all folders in given path.
+    :param path: path to folder with subfolders
+    :type path: str
+    :retruns: list of fouded folders
+    :rtype: list
+    """
     return [ f.path for f in os.scandir(path) if f.is_dir() ]
 
+def find_all_dirs_names(path):
+    """
+    Function find all folders names in given path.
+    :param path: names folders with subfolders
+    :type path: str
+    :retruns: list of fouded folders
+    :rtype: list
+    """
+    return [ os.path.split(f.path)[1] for f in os.scandir(path) if f.is_dir() ]
+
 def find_all_jpg(path):
-    #TODO: komentarze
+    """
+    Funcion find all jpegs in given folder and it subfoldrs. 
+    :param path: path to folder with subfolders and jpegs
+    :type path: str
+    :retruns: list of fouded images
+    :rtype: list
+    """
     images = []
     for x in os.walk(path):
         for y in glob.glob(os.path.join(x[0], '*.jpg')):
@@ -87,22 +144,38 @@ def find_all_jpg(path):
     return images
 
 def clean_tmp(path):
-    """That method clean tmp dir.
-    :param path: path to emp dir
+    """
+    That method clean tmp dir.
+    :param path: path to dir
     :type path: str
     :retruns: None
     :rtype: None
     """
+    if not os.path.exists(path):
+        os.mkdir(path)
     shutil.rmtree(path)
     os.mkdir(path)
     return None
 
 def remove_folder(path):
+    """
+    Remove folder in given path.
+    :param path: path to dir
+    :type path: str
+    :retruns: None
+    :rtype: None
+    """
     shutil.rmtree(path)
     return None
 
 def load_images(path):
-    #TODO: komentarze
+    """
+    Function return list of images paths in path folder u give.
+    :param path: path to folder with images
+    :type path: str
+    :retruns: list of founded images paths.
+    :rtype: list
+    """
     images = []
     valid_images = [".jpg", ".png", ".jpeg"]
     for f in os.listdir(path):
@@ -113,7 +186,13 @@ def load_images(path):
     return images
 
 def load_images_gen(path):
-    #TODO: komentarze
+    """
+    Function return list of images paths in path folder u give (using generator).
+    :param path: path to folder with images
+    :type path: str
+    :retruns: list of founded images paths.
+    :rtype: list
+    """
     valid_images = [".jpg", ".png", "jpeg"]
     for root, dirs, files in os.walk(path):
         for file_name in files:
@@ -122,7 +201,3 @@ def load_images_gen(path):
                 continue
             yield os.path.join(root, file_name)
 
-
-
-if __name__ == "__main__":
-    print(list(x**2 for x in range(10)))

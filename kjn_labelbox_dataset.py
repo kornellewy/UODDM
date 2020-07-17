@@ -96,7 +96,7 @@ class KJNLabelBoxToPascalVOCDataset(Dataset):
             if not bool(image_object["Label"]):
                 continue
             meta_data = {}
-            image_save_path = os.path.join(self.jpeg_images_path, image_object["ID"]+".jpeg")
+    v         image_save_path = os.path.join(self.jpeg_images_path, image_object["ID"]+".jpeg")
             urllib.request.urlretrieve(image_object["Labeled Data"], image_save_path)
             img = Image.open(image_save_path)
             w, h = img.size
