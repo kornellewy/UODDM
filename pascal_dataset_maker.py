@@ -25,6 +25,45 @@ class PascalDatasetWriter(object):
         self.annotations_folder_path = ''
         self.dataset_classes_map = dict()
 
+    def make_dataset(self, data, base_path, dataset_name):
+        """ 
+        Method is main mathod of that class, method repaked the data and then
+        make structure of dataset, then save all class names in dataset, and fill folders with
+        images and data about object on that images.
+        :param data: dict of data with images, labels, objects ... 
+        :type data: dict
+        :param base_path: base path where dataset will be save
+        :type base_path: str
+        :param base_path: dataset name and dataset folder name
+        :type base_path: str
+        :retruns: None
+        :rtype: None
+        """
+        return self._make_dataset(data, base_path, dataset_name)
+
+    def _make_dataset(self, data, base_path, dataset_name):
+        """ 
+        Method is main mathod of that class, method repaked the data and then
+        make structure of dataset, then save all class names in dataset, and fill folders with
+        images and data about object on that images.
+        :param data: dict of data with images, labels, objects ... 
+        :type data: dict
+        :param base_path: base path where dataset will be save
+        :type base_path: str
+        :param base_path: dataset name and dataset folder name
+        :type base_path: str
+        :retruns: None
+        :rtype: None
+        """
+        dataset_classes = data['dataset_classes']
+        images_path = data['images']
+        objects_on_images = data['objects']
+        self.create_folder_structure(base_path, dataset_name)
+        self._create_classes_names(dataset_classes)
+        self.create_classes_map(dataset_classes)
+        self.save_images_and_labels(objects_on_images)
+        return None
+
     def create_folder_structure(self, base_path, dataset_name):
         """Method create folder structure for dataset.
         :param base_path: base path where dataset will be make
@@ -48,8 +87,9 @@ class PascalDatasetWriter(object):
             os.mkdir(self.annotations_folder_path)
         return None
 
-    def create_classes_names(self, dataset_classes):
-        """Method classes.names create file that have classes names. 
+    def _create_classes_names(self, dataset_classes):
+        """
+        Method classes.names create file that have classes names. 
         :param dataset_classes: list of classes names
         :type dataset_classes: list
         :retruns: None
@@ -62,7 +102,9 @@ class PascalDatasetWriter(object):
         return None
 
     def create_classes_map(self, dataset_classes):
-        """Method create dict of dataset_classes, where key is a dataset class and value is index.
+        """
+        Method create dict of dataset_classes, where key is a dataset class
+        and value is index.
         :param dataset_classes: list of classes names
         :type dataset_classes: list
         :retruns: None
@@ -70,6 +112,20 @@ class PascalDatasetWriter(object):
         """
         # credit: https://stackoverflow.com/questions/36459969/python-convert-list-to-dictionary-with-indexess
         self.dataset_classes_map = {k: v for v, k in enumerate(dataset_classes)}
+        return None
+
+    def save_images_and_labels(self, objects_on_images):
+        """ Method iterate over list of dict with all imformation 
+        about image and all objects on that image.
+        :param objects_on_images: list of dict
+        :type objects_on_images: list
+        :retruns: None
+        :rtype: None
+        """
+        for object_on_image in objects_on_images:
+            # move image to new location, and rewrite img location in dict
+            object_on_image['img_path'] = self.copy_image(object_on_image['img_path'])
+            self.save_image_data_to_xml(object_on_image)
         return None
 
     def copy_image(self, old_image_path):
@@ -118,46 +174,8 @@ class PascalDatasetWriter(object):
         file_path = os.path.join(self.annotations_folder_path, name_without_extention+".xml")
         tree.write(file_path, encoding='UTF-8')
         return None
-
-    def save_images_and_labels(self, objects_on_images):
-        """ Method iterate over list of dict with all imformation 
-        about image and all objects on that image.
-        :param objects_on_images: list of dict
-        :type objects_on_images: list
-        :retruns: None
-        :rtype: None
-        """
-        for object_on_image in objects_on_images:
-            # move image to new location, and rewrite img location in dict
-            object_on_image['img_path'] = self.copy_image(object_on_image['img_path'])
-            self.save_image_data_to_xml(object_on_image)
-        return None
-            
-    def make_dataset(self, data, base_path, dataset_name):
-        """ Method is main mathod of that class, method repaked the data and then
-        make structure of dataset, then save all class names in dataset, and fill folders with
-        images and data about object on that images.
-        :param data: dict of data with images, labels, objects ... 
-        :type data: dict
-        :param base_path: base path where dataset will be save
-        :type base_path: str
-        :param base_path: dataset name and dataset folder name
-        :type base_path: str
-        :retruns: None
-        :rtype: None
-        """
-        dataset_classes = data['dataset_classes']
-        images_path = data['images']
-        objects_on_images = data['objects']
-        self.create_folder_structure(base_path, dataset_name)
-        self.create_classes_names(dataset_classes)
-        self.create_classes_map(dataset_classes)
-        self.save_images_and_labels(objects_on_images)
-        return None
-
-    def abstract_make_dataset(self, data, base_path, dataset_name):
-        return self.make_dataset(data, base_path, dataset_name)
+    
 
 if __name__ == "__main__":
     kjn = PascalDatasetWriter()
-    kjn.abstract_make_dataset(data='', base_path='', dataset_name='test')
+    kjn.make_dataset(data='', base_path='', dataset_name='test')

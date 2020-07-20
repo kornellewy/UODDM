@@ -33,7 +33,7 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
     #     self.assertEqual(len(load_images(self.tmp_path)), 0)
 
     def test_create_dataset_folder(self):
-        self.assertEqual(os.path.exists(self.dataset_name), True)
+        self.assertEqual(os.path.exists(self.dataset_path), True)
 
     def test_create_dataset_classes_folders(self):
         self.assertEqual(find_all_dirs_names(self.dataset_path).sort(), self.test_lablebox_data['dataset_classes'].sort())
@@ -44,6 +44,7 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
     def test_user_maping(self):
         self.assertEqual(len(find_all_jpg('test_classification_dataset/pricetag'))==0, True)
         self.assertEqual(len(find_all_jpg('test_classification_dataset/backgroud'))==0, True)
+
 
     def tearDown(self): 
         remove_folder(self.dataset_name)

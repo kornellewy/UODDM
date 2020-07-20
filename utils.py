@@ -201,3 +201,19 @@ def load_images_gen(path):
                 continue
             yield os.path.join(root, file_name)
 
+def load_text_files(path):
+    """
+    Function return list of txts paths in path folder u give.
+    :param path: path to folder with txts
+    :type path: str
+    :retruns: list of founded txts paths.
+    :rtype: list
+    """
+    txts = []
+    valid_txts = [".txt"]
+    for f in os.listdir(path):
+        file, ext = os.path.splitext(f)
+        if ext.lower() not in valid_txts:
+            continue
+        txts.append(os.path.join(path, f))
+    return txts
