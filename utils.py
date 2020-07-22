@@ -101,7 +101,7 @@ def load_images_without_extention(path):
     :rtype: list
     """
     images = []
-    valid_images = [".jpg", ".png", "jpeg"]
+    valid_images = [".jpg", ".png", ".jpeg"]
     for f in os.listdir(path):
         file, ext = os.path.splitext(f)
         if ext.lower() not in valid_images:
@@ -193,7 +193,7 @@ def load_images_gen(path):
     :retruns: list of founded images paths.
     :rtype: list
     """
-    valid_images = [".jpg", ".png", "jpeg"]
+    valid_images = [".jpg", ".png", ".jpeg"]
     for root, dirs, files in os.walk(path):
         for file_name in files:
             name, ext = os.path.splitext(file_name)
@@ -217,3 +217,20 @@ def load_text_files(path):
             continue
         txts.append(os.path.join(path, f))
     return txts
+
+def load_xml_paths(path):
+    """
+    Function return list of xmls paths in path folder u give.
+    :param path: path to folder with xmls
+    :type path: str
+    :retruns: list of founded xmls paths.
+    :rtype: list
+    """
+    xmls = []
+    valid_xmls = [".xml"]
+    for f in os.listdir(path):
+        _, ext = os.path.splitext(f)
+        if ext.lower() not in valid_xmls:
+            continue
+        xmls.append(os.path.join(path, f))
+    return xmls

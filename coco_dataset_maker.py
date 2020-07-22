@@ -134,18 +134,42 @@ class CocoDatasetWriter(object):
         return new_image_path   
         
     def _make_annotations_file(self, image_object):
+        """
+        Method generate name for txt file with labels and 
+        start method that save data to that file.
+        :param image_object: dict of all info about img and object on it
+        :type image_object: dict
+        :retruns: none
+        :rtype: none
+        """
         annotations_file_name =  self._return_annotations_file_name(image_object['img_path'])
         annotations_file_path = os.path.join(self.annotations_folder_path, annotations_file_name)
         self._save_txt_file(image_object, annotations_file_path)
         return None
 
     def _return_annotations_file_name(self, img_path):
+        """
+        Method generate label txt filename from img name.
+        :param img_path: path to img
+        :type image_object: str
+        :retruns: filename for txt file with labels
+        :rtype: str
+        """
         img_name = img_path
         _, img_name = os.path.split(img_name)
         return os.path.splitext(img_name)[0] + '.txt'
 
     def _save_txt_file(self, image_object, annotations_file_path):
-        # COCO Bounding box: (x-top left, y-top left, width, height)
+        """
+        Method extract data from dict and repack them to coco format and save in txt.
+        :param image_object: dict of data about all bbox on img
+        :type image_object: dict
+        :param annotations_file_path: path to txt file with labels
+        :type annotations_file_path: str
+        :retruns: None
+        :rtype: None
+        """
+        # example COCO Bounding box: (x-top left, y-top left, width, height)
         # 49 0.646836 0.132552 0.118047 0.096937
         img_height = image_object['height']
         img_width = image_object['width']
@@ -164,6 +188,13 @@ class CocoDatasetWriter(object):
         return None
 
     def _save_file(self, list_of_classes_and_bbox, filepath):
+        """
+        Method save list of strings with data about bbox in filepath.
+        :param list_of_classes_and_bbox: list of bbox with lables
+        :type list_of_classes_and_bbox: list
+        :param filepath: path to txt file 
+        :type filepath: str
+        """
         with open(filepath, 'a+') as file:
             for r in list_of_classes_and_bbox:
                 file.write(r + '\n')
