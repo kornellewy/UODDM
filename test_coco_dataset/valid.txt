@@ -1,0 +1,4 @@
+test_coco_dataset\train_images\ckc0mkv9i02960yawhcgp52lr.jpg
+test_coco_dataset\train_images\ckc0d8p3c261l0y8ogpcj9toj.jpg
+test_coco_dataset\train_images\ckc0mp23y2yub0z8x355a5k2x.jpg
+test_coco_dataset\train_images\ckc0dfqdg2wvw0yag0714cl3l.jpg

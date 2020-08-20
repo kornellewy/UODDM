@@ -2,21 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 
 from utils import load_xml_paths, load_images
-
-class PascalFoldersNamesError(Exception):
-    """
-    Exeption trow then format of image and annotaion format are wrong definde.
-    Method and atibutes are rly clear named so no coments on that.
-    """
-    def __init__(self, images_folder_name, annotations_folder_name,\
-         message="Folder names was not in predeifne folders names like :."):
-        self.images_folder_name = images_folder_name
-        self.annotations_folder_name = annotations_folder_name
-        self.message = message
-        super().__init__(self.message)
-
-    def __str__(self):
-        return f'{self.message} {self.images_folder_name} or {self.annotations_folder_name}'
+from exceptions import FoldersNamesError
 
 class PascalDatasetReader(object):
     """
@@ -70,7 +56,7 @@ class PascalDatasetReader(object):
         if self._test_structure_exist(dataset_path):
             output_data_in_universa_od_format = self._extract_data_from_folders()
         else:
-            raise PascalFoldersNamesError(self.images_folder_name, self.annotations_folder_name)
+            raise FoldersNamesError(self.images_folder_name, self.annotations_folder_name)
         return output_data_in_universa_od_format
 
     def _test_structure_exist(self, dataset_path):

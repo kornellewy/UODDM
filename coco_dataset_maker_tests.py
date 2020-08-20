@@ -4,9 +4,9 @@ import unittest
 from coco_dataset_maker import CocoDatasetWriter
 from labelbox_interface import LabelBoxInterface
 from utils import load_images, remove_folder, find_all_dirs_names, \
-                    find_all_jpg, clean_tmp, load_images_names, load_text_files
+                    find_all_jpg, clean_tmp, load_images_names, load_text_paths
 
-class ClassificationDatasetMakerTests(unittest.TestCase):
+class CocoDatasetMakerTests(unittest.TestCase):
     def setUp(self):
         self.tmp_path = 'tmp'
         self.output_path = ''
@@ -14,6 +14,8 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
         self.images_folder_name = 'train_images'
         self.annotations_folder_name = 'train_labels'
         self.classes_names_filename = 'classes.names'
+        self.train_filelist_name = 'train.txt'
+        self.valid_filelist_name = 'valid.txt'
         self.dataset_path = os.path.join(self.output_path, self.dataset_name)
         self.images_path = os.path.join(self.dataset_name, self.images_folder_name)
         self.annotations_path = os.path.join(self.dataset_name, self.annotations_folder_name)
@@ -24,7 +26,8 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
         self.test_lablebox_data = self.labelbox_interface.get_data(self.labelbox_json_path)
         # init class writer
         self.datasetmaker = CocoDatasetWriter()
-        self.datasetmaker.make_dataset(self.test_lablebox_data, '', self.dataset_name)
+        self.valid_size = 0.3
+        self.datasetmaker.make_dataset(self.test_lablebox_data, '', self.dataset_name, valid_size=self.valid_size)
 
     def test_tmp_exist(self):
         self.assertEqual(os.path.exists(self.tmp_path), True)
@@ -46,7 +49,7 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
 
     def test_txt_file_to_image(self):
         images = load_images_names(self.images_path)
-        folder_txts = load_text_files(self.annotations_path)
+        folder_txts = load_text_paths(self.annotations_path)
         folder_txts.sort()
         txts_form_images_names = []
         for image in images:
@@ -55,6 +58,12 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
             txts_form_images_names.append(label_txt_filepath)
         txts_form_images_names.sort()
         self.assertEqual(txts_form_images_names == folder_txts, True)        
+
+    def test_create_list_file(self):
+        valid_listfile_path = os.path.join(self.dataset_path, self.valid_filelist_name)
+        train_listfile_path = os.path.join(self.dataset_path, self.train_filelist_name)
+        self.assertEqual(os.path.exists(valid_listfile_path), True)
+        self.assertEqual(os.path.exists(train_listfile_path), True)
 
     def tearDown(self): 
         remove_folder(self.dataset_name)

@@ -8,22 +8,29 @@ Pascal VOC Bounding box :
 """
 import os
 import shutil
+from pathlib import Path
+import random
 
-# TODO: format is 2014 check if 2017 changemin some way
+from utils import load_images
+
+
 class CocoDatasetWriter(object):
     def __init__(self):
         super().__init__()
         self.images_folder_name = 'train_images'
         self.annotations_folder_name = 'train_labels'
         self.classes_names_filename = 'classes.names'
+        self.train_filelist_name = 'train.txt'
+        self.valid_filelist_name = 'valid.txt'
         self.dataset_name = ''
         self.dataset_folder_path = ''
         self.images_folder_path = ''
         self.annotations_folder_path = ''
         self.classes_names_path = ''
+        self.valid_size = None
         self.dataset_classes_to_idx_map = dict()
 
-    def make_dataset(self, data, base_path, dataset_name):
+    def make_dataset(self, data, base_path, dataset_name, valid_size = None):
         """ 
         Method is main mathod of that class, method repaked the data and then
         make structure of dataset, then save all class names in dataset, and fill folders with
@@ -34,12 +41,14 @@ class CocoDatasetWriter(object):
         :type base_path: str
         :param base_path: dataset name and dataset folder name
         :type base_path: str
+        :param valid_size: should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the valid split.
+        :type valid_size: float
         :retruns: None
         :rtype: None
         """
-        return self._make_dataset(data, base_path, dataset_name)
+        return self._make_dataset(data, base_path, dataset_name, valid_size)
 
-    def _make_dataset(self, data, base_path, dataset_name):
+    def _make_dataset(self, data, base_path, dataset_name, valid_size):
         """ 
         Method is main mathod of that class, method repaked the data and then
         make structure of dataset, then save all class names in dataset, and fill folders with
@@ -50,6 +59,8 @@ class CocoDatasetWriter(object):
         :type base_path: str
         :param base_path: dataset name and dataset folder name
         :type base_path: str
+        :param valid_size: should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the valid split.
+        :type valid_size: float
         :retruns: None
         :rtype: None
         """
@@ -60,6 +71,7 @@ class CocoDatasetWriter(object):
         self._create_classes_names(dataset_classes)
         self._create_classes_to_idx_map(dataset_classes)
         self._save_images_and_labels(objects_on_images)
+        self._create_list_file(valid_size)
         return None
 
     def _create_folder_structure(self, base_path, dataset_name):
@@ -199,3 +211,29 @@ class CocoDatasetWriter(object):
             for r in list_of_classes_and_bbox:
                 file.write(r + '\n')
         return None
+
+    def _create_list_file(self, valid_size):
+        """
+        Method create listfile with list of train paths images and listfile with list of valid paths images.
+        :param valid_size: should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the valid split.
+        :type valid_size: float
+        :retruns: None
+        :rtype: None
+        """
+        if valid_size != None and valid_size >= 0.0 and valid_size <= 1.0:
+            all_images_paths = load_images(self.images_folder_path)
+            random.shuffle(all_images_paths)
+            all_images_len = len(all_images_paths)
+            valid_images_len = int(valid_size * all_images_len)
+            train_images_len = all_images_len - valid_images_len
+            train_images_paths = all_images_paths[:train_images_len]
+            valid_images_paths = all_images_paths[train_images_len:]
+            self._save_file(train_images_paths, os.path.join(self.dataset_folder_path, self.train_filelist_name))
+            self._save_file(valid_images_paths, os.path.join(self.dataset_folder_path, self.valid_filelist_name))
+        return None
+
+
+
+
+
+

@@ -201,7 +201,7 @@ def load_images_gen(path):
                 continue
             yield os.path.join(root, file_name)
 
-def load_text_files(path):
+def load_text_paths(path):
     """
     Function return list of txts paths in path folder u give.
     :param path: path to folder with txts
@@ -234,3 +234,18 @@ def load_xml_paths(path):
             continue
         xmls.append(os.path.join(path, f))
     return xmls
+
+def load_text_file_as_list(path):
+    """
+    Function read txt file from path and return insides as list.
+    :param path: path to text file
+    :type path: str
+    :retruns: list or rows
+    :rtype: list 
+    """
+    with open(path) as file:
+        lines = []
+        for line in file:
+            lines.append(line.rstrip())
+    return lines
+            

@@ -1,10 +1,11 @@
 import os 
 import unittest
 
-from pascal_dataset_interface import PascalDatasetReader, PascalFoldersNamesError
+from pascal_dataset_interface import PascalDatasetReader
 from pascal_dataset_maker import PascalDatasetWriter
 from labelbox_interface import LabelBoxInterface
 from utils import load_images, remove_folder, load_xml_paths
+from exceptions import FoldersNamesError
 
 
 class PascalDatasetReaderTests(unittest.TestCase):
@@ -25,10 +26,10 @@ class PascalDatasetReaderTests(unittest.TestCase):
         self.assertEqual(pascal_reader.images_folder_name, images_folder_name)
         self.assertEqual(pascal_reader.annotations_folder_name, annotations_folder_name)
 
-    def test_PascalFoldersNamesError_raise(self):
+    def test_FoldersNamesError_raise(self):
         dataset_path = 'test_files'
         pascal_reader = PascalDatasetReader()
-        self.assertRaises(PascalFoldersNamesError, pascal_reader.get_data, dataset_path)
+        self.assertRaises(FoldersNamesError, pascal_reader.get_data, dataset_path)
 
     def test_test_structure_exist(self):
         pascal_reader = PascalDatasetReader()

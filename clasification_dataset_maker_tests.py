@@ -28,10 +28,6 @@ class ClassificationDatasetMakerTests(unittest.TestCase):
     def test_tmp_exist(self):
         self.assertEqual(os.path.exists(self.tmp_path), True)
 
-    # def test_tmp_clean(self):
-    #     dataset_maker = ClassificationDatasetMaker(tmp_folder=self.tmp_path)
-    #     self.assertEqual(len(load_images(self.tmp_path)), 0)
-
     def test_create_dataset_folder(self):
         self.assertEqual(os.path.exists(self.dataset_path), True)
 
